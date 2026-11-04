@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="assets/style.css">
   <!-- Ставим сохранённую тему до отрисовки страницы, чтобы не было мигания -->
   <script>
+    document.documentElement.classList.add('js');
     try {
       var savedTheme = localStorage.getItem('aviola-theme');
       if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
@@ -48,6 +49,7 @@
         <button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav">☰</button>
       </div>
     </div>
+    <div class="scroll-progress" aria-hidden="true"></div>
   </header>
 
   <main>
@@ -75,17 +77,17 @@
              &nbsp; в тексте — неразрывный пробел (чтобы предлог не оставался в конце строки). Можно писать и обычным пробелом.
              ============================================================== -->
         <div class="info-grid">
-          <article class="info-card">
+          <article class="info-card" data-reveal>
             <div class="iconbox">✦</div>
             <h3>Сетевые сервисы</h3>
             <p>Соберите в&nbsp;одном месте доступные внутренние и&nbsp;информационные ресурсы.</p>
           </article>
-          <article class="info-card">
+          <article class="info-card" data-reveal>
             <div class="iconbox">✦</div>
             <h3>Инструкции</h3>
             <p>Добавьте руководства и&nbsp;ответы на&nbsp;частые технические вопросы.</p>
           </article>
-          <article class="info-card">
+          <article class="info-card" data-reveal>
             <div class="iconbox">✦</div>
             <h3>Полезные ссылки</h3>
             <p>Каталог проверенных ресурсов для&nbsp;пользователей сети.</p>
@@ -93,10 +95,10 @@
         </div>
 
         <!-- ✏️ Серая плашка-примечание: когда замените все тексты настоящими, удалите весь блок notice -->
-        <div class="notice">Примечание: тексты и&nbsp;сведения в&nbsp;этом шаблоне демонстрационные. Перед публикацией замените их на&nbsp;подтверждённую информацию Авиола.NET.</div>
+        <div class="notice" data-reveal>Примечание: тексты и&nbsp;сведения в&nbsp;этом шаблоне демонстрационные. Перед публикацией замените их на&nbsp;подтверждённую информацию Авиола.NET.</div>
 
         <!-- ✏️ Синий блок внизу: заголовок <h2>, текст <p>, кнопка (адрес в href) -->
-        <div class="callout">
+        <div class="callout" data-reveal>
           <div>
             <h2>Остались вопросы?</h2>
             <p>Посмотрите информацию для&nbsp;абонентов или&nbsp;вернитесь на&nbsp;главную страницу.</p>
