@@ -1,0 +1,954 @@
+/* ==========================================================================
+   Авиола.NET — стили сайта
+   Оглавление: 1. Тема  2. База  3. Шапка  4. Кнопки  5. Первый экран
+   6. Секции и карточки  7. Подвал  8. Переключатель темы  9. Анимации
+   10. Адаптив
+   ========================================================================== */
+
+
+/* 1. Тема ------------------------------------------------------------------
+   Светлая тема по умолчанию. Тёмная включается двумя способами:
+   — автоматически, если в системе выбрана тёмная тема;
+   — вручную, кнопкой в углу (скрипт ставит data-theme на <html>).
+   Блок с тёмными цветами повторён дважды — это нормально для чистого CSS.   */
+
+:root {
+  color-scheme: light;
+
+  --bg: #fbfdff;
+  --surface: #fff;
+  --soft-overlay: rgba(243, 248, 254, .72);
+  --tint: #eaf4ff;
+
+  --text: #152238;
+  --muted: #66758b;
+  --nav-text: #52647b;
+  --line: #e5edf6;
+
+  --accent: #1769d2;
+  --btn: #1769d2;
+  --btn-hover: #0d4fa8;
+  --btn-shadow: rgba(23, 105, 210, .16);
+  --secondary-border: #d8e7f8;
+  --card-hover-border: #c8def7;
+
+  --header-bg: rgba(255, 255, 255, .88);
+  --notice-bg: #eef6ff;
+  --shadow: 0 18px 48px rgba(25, 67, 117, .09);
+  --radius: 1.375rem;
+
+  --glow-a: rgba(43, 139, 240, .26);
+  --glow-b: rgba(125, 196, 255, .34);
+  --net-rgb: 23, 105, 210;
+
+  --callout-from: #0e55aa;
+  --callout-to: #2588ef;
+  --footer-bg: rgba(16, 35, 62, .92);
+  --footer-edge: #10233e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #131d31;
+    --surface: #1b2842;
+    --soft-overlay: rgba(23, 34, 56, .7);
+    --tint: #223760;
+
+    --text: #ebf1fa;
+    --muted: #aebdd2;
+    --nav-text: #c2cee1;
+    --line: #2c3c5c;
+
+    --accent: #7fbfff;
+    --btn: #2272ea;
+    --btn-hover: #1c63cf;
+    --btn-shadow: rgba(0, 0, 0, .3);
+    --secondary-border: #38548a;
+    --card-hover-border: #3f629a;
+
+    --header-bg: rgba(19, 29, 49, .82);
+    --notice-bg: #1a2945;
+    --shadow: 0 18px 48px rgba(0, 0, 0, .32);
+
+    --glow-a: rgba(45, 125, 240, .32);
+    --glow-b: rgba(70, 170, 255, .18);
+    --net-rgb: 127, 191, 255;
+
+    --callout-from: #0d4a9a;
+    --callout-to: #2277d8;
+    --footer-bg: rgba(12, 20, 36, .92);
+    --footer-edge: #2c3c5c;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #131d31;
+  --surface: #1b2842;
+  --soft-overlay: rgba(23, 34, 56, .7);
+  --tint: #223760;
+
+  --text: #ebf1fa;
+  --muted: #aebdd2;
+  --nav-text: #c2cee1;
+  --line: #2c3c5c;
+
+  --accent: #7fbfff;
+  --btn: #2272ea;
+  --btn-hover: #1c63cf;
+  --btn-shadow: rgba(0, 0, 0, .3);
+  --secondary-border: #38548a;
+  --card-hover-border: #3f629a;
+
+  --header-bg: rgba(19, 29, 49, .82);
+  --notice-bg: #1a2945;
+  --shadow: 0 18px 48px rgba(0, 0, 0, .32);
+
+  --glow-a: rgba(45, 125, 240, .32);
+  --glow-b: rgba(70, 170, 255, .18);
+  --net-rgb: 127, 191, 255;
+
+  --callout-from: #0d4a9a;
+  --callout-to: #2277d8;
+  --footer-bg: rgba(12, 20, 36, .92);
+  --footer-edge: #2c3c5c;
+}
+
+
+/* 2. База ----------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* 16px на ноутбуках, до 22px на больших мониторах: всё в rem масштабируется вместе с ним */
+  font-size: clamp(16px, 0.5vw + 8px, 22px);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 0.375rem;
+}
+
+.container {
+  width: min(78rem, calc(100% - 2.5rem));
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: clamp(2.375rem, 5vw, 3.875rem);
+  line-height: 1.08;
+  letter-spacing: -0.175rem;
+  margin: 1.25rem 0 1.125rem;
+  max-width: 45rem;
+}
+
+h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  letter-spacing: -1.4px;
+  line-height: 1.15;
+  margin: 0 0 0.625rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.75rem;
+  border-radius: 1.875rem;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Бейдж над заголовком секции: без отступа он прилипает к тексту */
+.section-head .eyebrow {
+  margin-bottom: 0.875rem;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+
+/* 3. Шапка ---------------------------------------------------------------- */
+
+.topline {
+  height: 0.3125rem;
+  background: linear-gradient(90deg, #0b4da2, #2b8bf0, #7dc4ff, #2b8bf0, #0b4da2) 0 0 / 50% 100% repeat-x;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.navbar {
+  min-height: 5.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.625rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6875rem;
+  font-weight: 800;
+  font-size: 1.375rem;
+  letter-spacing: -.7px;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  width: 2.375rem;
+  height: 2.375rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(145deg, #2487f0, #0c4a9c);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 7px 16px rgba(23, 105, 210, .27);
+}
+
+.brand-name span {
+  color: var(--accent);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.375rem;
+}
+
+.site-nav a {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--nav-text);
+  transition: color .2s;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  color: var(--accent);
+}
+
+/* Кнопка «Личный кабинет» внутри меню нужна только на узких экранах */
+.site-nav .nav-cta {
+  display: none;
+  color: #fff;
+}
+
+.site-nav .nav-cta:hover {
+  color: #fff;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.menu-toggle {
+  display: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 0.625rem;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+
+/* 4. Кнопки --------------------------------------------------------------- */
+
+.nav-cta,
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.125rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--btn);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px var(--btn-shadow);
+  cursor: pointer;
+  transition: background-color .2s, transform .2s;
+}
+
+.nav-cta:hover,
+.button:hover {
+  background: var(--btn-hover);
+}
+
+.button.secondary {
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--secondary-border);
+  box-shadow: none;
+}
+
+.button.secondary:hover {
+  background: var(--tint);
+}
+
+
+/* 5. Первый экран --------------------------------------------------------- */
+
+.hero {
+  padding: 5.125rem 0 4.375rem;
+}
+
+.page-hero {
+  padding: 3.875rem 0 3rem;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Фон страницы: холст с узлами (создаёт script.js) и два светлых пятна.
+   Всё закреплено за окном и лежит под контентом, поэтому анимация видна на всей странице. */
+.net-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+body::before {
+  width: max(36rem, 46vw);
+  top: -14rem;
+  right: -10rem;
+  background: radial-gradient(circle, var(--glow-a), transparent 68%);
+}
+
+body::after {
+  width: max(34rem, 42vw);
+  bottom: -12rem;
+  left: -12rem;
+  background: radial-gradient(circle, var(--glow-b), transparent 68%);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  align-items: center;
+  gap: 3.75rem;
+}
+
+.lead {
+  font-size: 1.0625rem;
+  color: var(--muted);
+  max-width: 38.125rem;
+  margin: 0 0 1.75rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.visual {
+  position: relative;
+  min-height: 20.625rem;
+  padding: 1.875rem;
+  border-radius: 1.875rem;
+  background: linear-gradient(145deg, #0c4d9e, #1b80e8);
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 28px 65px rgba(20, 90, 163, .2);
+}
+
+.visual::before,
+.visual::after {
+  content: "";
+  position: absolute;
+  width: 22.5rem;
+  height: 22.5rem;
+  right: -6.25rem;
+  top: -7.5rem;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 50%;
+}
+
+.visual::after {
+  width: 15rem;
+  height: 15rem;
+  right: -2.5rem;
+  top: -3.75rem;
+}
+
+.signal {
+  position: absolute;
+  inset: -1.875rem;
+  opacity: .18;
+  background: repeating-linear-gradient(135deg, transparent 0 18px, #fff 19px 20px);
+}
+
+.visual-content {
+  position: relative;
+  z-index: 1;
+}
+
+.visual-kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: .75;
+}
+
+.visual-title {
+  max-width: 16.875rem;
+  margin: 0.75rem 0 1.75rem;
+  font-size: 1.9375rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.stat-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.stat {
+  min-width: 7rem;
+  padding: 0.8125rem 0.9375rem;
+  border: 1px solid rgba(255, 255, 255, .21);
+  border-radius: 0.9375rem;
+  background: rgba(255, 255, 255, .11);
+}
+
+.stat strong {
+  display: block;
+  font-size: 1.4375rem;
+}
+
+.stat small {
+  font-size: 0.75rem;
+  opacity: .85;
+}
+
+
+/* 6. Секции и карточки ---------------------------------------------------- */
+
+.section {
+  padding: 4.75rem 0;
+}
+
+.section.soft {
+  background: var(--soft-overlay);
+}
+
+.section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.section-head p {
+  max-width: 36.875rem;
+  margin: 0;
+  color: var(--muted);
+}
+
+.cards,
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.125rem;
+}
+
+.card,
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5625rem;
+}
+
+.card {
+  box-shadow: var(--shadow);
+  transition: transform .22s, border-color .22s;
+}
+
+.card:hover {
+  border-color: var(--card-hover-border);
+}
+
+.iconbox {
+  display: grid;
+  place-items: center;
+  width: 2.875rem;
+  height: 2.875rem;
+  margin-bottom: 1.1875rem;
+  border-radius: 0.875rem;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: 1.3125rem;
+}
+
+.card h3 {
+  margin: 0 0 0.5625rem;
+  font-size: 1.125rem;
+  letter-spacing: -.4px;
+}
+
+.info-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.0625rem;
+}
+
+.card p {
+  margin: 0 0 1.0625rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.info-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.arrowlink {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.breadcrumb {
+  margin-bottom: 1.0625rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.breadcrumb a {
+  color: var(--accent);
+}
+
+.page-hero h1 {
+  /* верхний отступ нужен, чтобы бейдж не прилипал к заголовку */
+  margin: 1.125rem 0 0.875rem;
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+}
+
+.page-hero p {
+  max-width: 43.75rem;
+  margin: 0;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.notice {
+  margin-top: 1.375rem;
+  padding: 0.875rem 1.0625rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0.625rem;
+  background: var(--notice-bg);
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 2.125rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(120deg, var(--callout-from), var(--callout-to), var(--callout-from)) 0 50% / 200% 100%;
+  color: #fff;
+}
+
+/* Отступ сверху только если блок идёт после другого контента */
+.container > * + .callout {
+  margin-top: 1.75rem;
+}
+
+.callout h2 {
+  margin: 0 0 0.4375rem;
+  font-size: 1.6875rem;
+}
+
+.callout p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #e0efff;
+}
+
+.callout .button {
+  background: #fff;
+  color: #0d4fa8;
+  box-shadow: none;
+}
+
+.callout .button:hover {
+  background: #eaf4ff;
+}
+
+
+/* 7. Подвал --------------------------------------------------------------- */
+
+.site-footer {
+  padding: 3.25rem 0 1.5625rem;
+  background: var(--footer-bg);
+  border-top: 1px solid var(--footer-edge);
+  color: #fff;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.footer-brand {
+  font-size: 1.3125rem;
+  font-weight: 800;
+}
+
+.footer-brand span {
+  color: #65b4ff;
+}
+
+.footer-note {
+  max-width: 19.375rem;
+  font-size: 0.8125rem;
+  color: #9eb0c8;
+}
+
+.footer-col h4 {
+  margin: 0.25rem 0 0.875rem;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #8db7e7;
+}
+
+.footer-col a {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+  color: #d5e1ef;
+}
+
+.footer-col a:hover {
+  color: #fff;
+}
+
+.copyright {
+  margin-top: 2.1875rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, .11);
+  font-size: 0.75rem;
+  color: #8498b4;
+}
+
+
+/* 8. Переключатель темы --------------------------------------------------- */
+
+.theme-toggle {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+
+.theme-toggle svg {
+  grid-area: 1 / 1;
+  width: 1.375rem;
+  height: 1.375rem;
+  transition: transform .4s ease, opacity .3s ease;
+}
+
+/* Показываем иконку того, на что тема переключится */
+.theme-toggle[data-current="dark"] .icon-moon,
+.theme-toggle[data-current="light"] .icon-sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(.5);
+}
+
+
+/* Приподнимание при наведении — только для устройств с мышью,
+   иначе на телефоне эффект «залипает» после касания */
+@media (hover: hover) {
+  .nav-cta:hover,
+  .button:hover {
+    transform: translateY(-1px);
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .theme-toggle:hover {
+    transform: translateY(-2px) rotate(8deg);
+  }
+}
+
+
+/* 9. Анимации фона --------------------------------------------------------
+   Всё на transform и opacity, чтобы не нагружать страницу.
+   Для тех, у кого в системе включено «уменьшить движение», анимации выключены. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .topline {
+    animation: topline-flow 8s linear infinite;
+  }
+
+  body::before {
+    animation: drift-a 24s ease-in-out infinite;
+  }
+
+  body::after {
+    animation: drift-b 30s ease-in-out infinite;
+  }
+
+  .visual::before {
+    animation: ring-pulse 6s ease-out infinite;
+  }
+
+  .visual::after {
+    animation: ring-pulse 6s ease-out 3s infinite;
+  }
+
+  .signal {
+    animation: stripes-slide 2.4s linear infinite;
+  }
+
+  .callout {
+    animation: callout-shift 12s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes topline-flow {
+  to { background-position-x: 100%; }
+}
+
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-90px, 60px) scale(1.15); }
+}
+
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(110px, -40px) scale(.9); }
+}
+
+@keyframes ring-pulse {
+  0%   { transform: scale(.8); opacity: 0; }
+  25%  { opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* Сдвиг ровно на один период полос (20px по диагонали), поэтому шва не видно */
+@keyframes stripes-slide {
+  to { transform: translate(14.14px, 14.14px); }
+}
+
+@keyframes callout-shift {
+  to { background-position: 100% 50%; }
+}
+
+
+/* 10. Адаптив ------------------------------------------------------------- */
+
+@media (max-width: 1020px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.125rem;
+    padding: 0.75rem 1.25rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+
+  .site-nav.open {
+    display: flex;
+  }
+
+  .site-nav a {
+    padding: 0.6875rem 0.25rem;
+    font-size: 1rem;
+  }
+
+  .hero-grid {
+    gap: 1.75rem;
+  }
+
+  .cards,
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    min-height: 4.375rem;
+  }
+
+  .hero {
+    padding: 3.4375rem 0;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .visual {
+    min-height: 16.875rem;
+  }
+
+  .section {
+    padding: 3.4375rem 0;
+  }
+
+  .section-head {
+    display: block;
+  }
+
+  .cards,
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-grid > div:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .callout {
+    display: block;
+  }
+
+  .callout .button {
+    margin-top: 1.25rem;
+  }
+
+  h1 {
+    letter-spacing: -0.1125rem;
+  }
+}
+
+/* На самых узких экранах кнопка «Личный кабинет» переезжает в меню */
+@media (max-width: 520px) {
+  .nav-actions .nav-cta {
+    display: none;
+  }
+
+  .site-nav .nav-cta {
+    display: inline-flex;
+    margin-top: 0.625rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    width: min(100% - 1.75rem, 72.5rem);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid > div:first-child {
+    grid-column: auto;
+  }
+
+  .stat-row {
+    flex-wrap: wrap;
+  }
+
+  .theme-toggle {
+    right: 0.875rem;
+    bottom: 0.875rem;
+  }
+}
