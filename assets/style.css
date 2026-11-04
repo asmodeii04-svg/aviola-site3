@@ -41,6 +41,10 @@
   --glow-b: rgba(125, 196, 255, .34);
   --net-rgb: 23, 105, 210;
 
+  --em-2: #2589f0;
+  --spot: rgba(23, 105, 210, .10);
+  --header-shadow: 0 10px 30px rgba(25, 67, 117, .10);
+
   --callout-from: #0e55aa;
   --callout-to: #2588ef;
   --footer-bg: rgba(16, 35, 62, .92);
@@ -75,6 +79,10 @@
     --glow-a: rgba(45, 125, 240, .32);
     --glow-b: rgba(70, 170, 255, .18);
     --net-rgb: 127, 191, 255;
+
+    --em-2: #a5e2ff;
+    --spot: rgba(127, 191, 255, .13);
+    --header-shadow: 0 10px 30px rgba(0, 0, 0, .35);
 
     --callout-from: #0d4a9a;
     --callout-to: #2277d8;
@@ -111,6 +119,10 @@
   --glow-b: rgba(70, 170, 255, .18);
   --net-rgb: 127, 191, 255;
 
+  --em-2: #a5e2ff;
+  --spot: rgba(127, 191, 255, .13);
+  --header-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+
   --callout-from: #0d4a9a;
   --callout-to: #2277d8;
   --footer-bg: rgba(12, 20, 36, .92);
@@ -127,17 +139,10 @@
 }
 
 html {
-  /* Телефоны и планшеты: обычные 16px */
+  /* Все размеры сайта заданы в rem. Базовый размер постоянный, поэтому текст и блоки
+     не раздуваются на больших мониторах: контент просто центрируется (макс. 86rem) */
   font-size: 16px;
   scroll-behavior: smooth;
-}
-
-/* Компьютер: размер шрифта привязан к ширине окна, а все размеры сайта заданы в rem,
-   поэтому страница плавно масштабируется целиком вместе с окном (эталон — окно 1440px) */
-@media (min-width: 1101px) {
-  html {
-    font-size: clamp(15px, 1.111vw, 44px);
-  }
 }
 
 body {
@@ -146,6 +151,16 @@ body {
   color: var(--text);
   background: var(--bg);
   line-height: 1.6;
+
+  /* Подвал всегда прижат к низу окна, даже если на странице мало контента */
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 a {
@@ -160,7 +175,7 @@ a {
 }
 
 .container {
-  width: min(78rem, calc(100% - 2.5rem));
+  width: min(86rem, calc(100% - clamp(2.5rem, 7vw, 10rem)));
   margin: 0 auto;
 }
 
@@ -242,14 +257,14 @@ h2 {
   align-items: center;
   gap: 0.6875rem;
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   letter-spacing: -.7px;
   white-space: nowrap;
 }
 
 .brand-mark {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.375rem;
+  height: 2.375rem;
   border-radius: 0.75rem;
   background: linear-gradient(145deg, #2487f0, #0c4a9c);
   display: grid;
@@ -270,7 +285,7 @@ h2 {
 }
 
 .site-nav a {
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--nav-text);
   transition: color .2s;
@@ -279,11 +294,6 @@ h2 {
 .site-nav a:hover,
 .site-nav a[aria-current="page"] {
   color: var(--accent);
-}
-
-.nav-actions .nav-cta {
-  font-size: 1rem;
-  padding: 0.75rem 1.25rem;
 }
 
 /* Кнопка «Личный кабинет» внутри меню нужна только на узких экранах */
@@ -839,9 +849,189 @@ body::after {
 }
 
 
+/* 9б. Эффекты ---------------------------------------------------------------- */
+
+/* Ссылки меню: линия подчёркивания выезжает слева */
+.site-nav a {
+  position: relative;
+}
+
+.site-nav a::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.4rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .28s ease;
+}
+
+.site-nav a:hover::before,
+.site-nav a[aria-current="page"]::before {
+  transform: scaleX(1);
+}
+
+.site-nav .nav-cta::before {
+  display: none;
+}
+
+/* Шапка: тень после прокрутки и тонкая полоса прогресса чтения */
+.site-header {
+  transition: box-shadow .25s ease;
+}
+
+.site-header.is-scrolled {
+  box-shadow: var(--header-shadow);
+}
+
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #2b8bf0, #7dc4ff);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* Кнопки: блик пробегает по кнопке при наведении */
+.nav-cta,
+.button {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-cta::after,
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .38) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform .65s ease;
+  pointer-events: none;
+}
+
+.button.secondary::after {
+  display: none;
+}
+
+/* Заголовок: выделенное слово переливается */
+h1 em {
+  color: var(--accent);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 em {
+    background: linear-gradient(90deg, var(--accent), var(--em-2), var(--accent)) 0 0 / 200% 100% repeat-x;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}
+
+/* Карточки: свет следует за курсором, иконка слегка поворачивается */
+.card,
+.info-card {
+  position: relative;
+}
+
+.card::before,
+.info-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 50%), var(--spot), transparent 60%);
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
+}
+
+.iconbox {
+  transition: transform .3s ease;
+}
+
+@media (hover: hover) {
+  .nav-cta:hover::after,
+  .button:hover::after {
+    transform: translateX(120%);
+  }
+
+  .card:hover::before,
+  .info-card:hover::before {
+    opacity: 1;
+  }
+
+  .card:hover .iconbox {
+    transform: scale(1.1) rotate(-6deg);
+  }
+}
+
+/* Появление блоков при прокрутке (класс js ставится в <head>, поэтому без скриптов всё видно) */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .eyebrow::before {
+    animation: dot-pulse 2.4s ease-out infinite;
+  }
+
+  h1 em {
+    animation: em-flow 7s linear infinite;
+  }
+
+  /* Первый экран плавно «въезжает» один раз при загрузке */
+  .hero-grid > :first-child,
+  .page-hero > .container {
+    animation: rise .8s ease both;
+  }
+
+  .hero-grid > .visual {
+    animation: rise .9s .15s ease both;
+  }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(1.25rem); }
+}
+
+@keyframes em-flow {
+  to { background-position-x: 200%; }
+}
+
+@keyframes dot-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+  100% { box-shadow: 0 0 0 0.5rem transparent; }
+}
+
+
 /* 10. Адаптив ------------------------------------------------------------- */
 
-@media (max-width: 1100px) {
+@media (max-width: 1160px) {
   .menu-toggle {
     display: block;
   }
@@ -863,6 +1053,10 @@ body::after {
 
   .site-nav.open {
     display: flex;
+  }
+
+  .site-nav a::before {
+    display: none;
   }
 
   .site-nav a {
