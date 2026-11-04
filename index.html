@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="assets/style.css">
   <!-- Ставим сохранённую тему до отрисовки страницы, чтобы не было мигания -->
   <script>
+    document.documentElement.classList.add('js');
     try {
       var savedTheme = localStorage.getItem('aviola-theme');
       if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
@@ -48,6 +49,7 @@
         <button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav">☰</button>
       </div>
     </div>
+    <div class="scroll-progress" aria-hidden="true"></div>
   </header>
 
   <main>
@@ -94,7 +96,7 @@
          ============================================================== -->
     <section class="section">
       <div class="container">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div>
             <span class="eyebrow">Навигация</span>
             <h2>Изучите наши разделы</h2>
@@ -103,37 +105,37 @@
         </div>
 
         <div class="cards">
-          <a class="card" href="news.html">
+          <a class="card" href="news.html" data-reveal>
             <div class="iconbox">◈</div>
             <h3>Новости</h3>
             <p>Следите за&nbsp;обновлениями, важными сообщениями и&nbsp;событиями компании.</p>
             <span class="arrowlink">Перейти в&nbsp;раздел →</span>
           </a>
-          <a class="card" href="iptv.html">
+          <a class="card" href="iptv.html" data-reveal>
             <div class="iconbox">▣</div>
             <h3>IPTV</h3>
             <p>Телевидение и&nbsp;цифровой контент для&nbsp;комфортного просмотра.</p>
             <span class="arrowlink">Перейти в&nbsp;раздел →</span>
           </a>
-          <a class="card" href="resources.html">
+          <a class="card" href="resources.html" data-reveal>
             <div class="iconbox">⌘</div>
             <h3>Ресурсы сети</h3>
             <p>Полезные сетевые сервисы, инструменты и&nbsp;материалы.</p>
             <span class="arrowlink">Перейти в&nbsp;раздел →</span>
           </a>
-          <a class="card" href="subscribers.html">
+          <a class="card" href="subscribers.html" data-reveal>
             <div class="iconbox">♧</div>
             <h3>Абонентам</h3>
             <p>Информация об&nbsp;обслуживании, подключении и&nbsp;поддержке.</p>
             <span class="arrowlink">Перейти в&nbsp;раздел →</span>
           </a>
-          <a class="card" href="geography.html">
+          <a class="card" href="geography.html" data-reveal>
             <div class="iconbox">⌖</div>
             <h3>География сети</h3>
             <p>Узнайте больше о&nbsp;зонах присутствия и&nbsp;развитии сети.</p>
             <span class="arrowlink">Перейти в&nbsp;раздел →</span>
           </a>
-          <a class="card" href="about.html">
+          <a class="card" href="about.html" data-reveal>
             <div class="iconbox">◎</div>
             <h3>О провайдере</h3>
             <p>Познакомьтесь с&nbsp;компанией, принципами работы и&nbsp;контактами.</p>
@@ -149,7 +151,7 @@
          ============================================================== -->
     <section class="section soft">
       <div class="container">
-        <div class="callout">
+        <div class="callout" data-reveal>
           <div>
             <h2>Нужна помощь или консультация?</h2>
             <p>Откройте раздел для&nbsp;абонентов, чтобы найти нужную информацию.</p>
