@@ -94,7 +94,7 @@ function initMenu() {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') setOpen(false);
   });
-  window.matchMedia('(min-width: 1021px)').addEventListener('change', (event) => {
+  window.matchMedia('(min-width: 1101px)').addEventListener('change', (event) => {
     if (event.matches) setOpen(false);
   });
 }
