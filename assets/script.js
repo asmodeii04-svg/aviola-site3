@@ -2,7 +2,8 @@
  * Авиола.NET — скрипты сайта
  * 1. Тема (системная + ручной переключатель)
  * 2. Мобильное меню
- * 3. Анимированная сетка узлов на фоне всей страницы
+ * 3. Эффекты шапки, появление блоков, подсветка карточек
+ * 4. Анимированная сетка узлов на фоне всей страницы
  */
 
 const THEME_KEY = 'aviola-theme';
@@ -11,6 +12,9 @@ const THEME_COLORS = { light: '#fbfdff', dark: '#131d31' };
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initMenu();
+  initHeaderEffects();
+  initReveal();
+  initCardSpotlight();
   initNetworkBackground();
 });
 
@@ -94,13 +98,89 @@ function initMenu() {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') setOpen(false);
   });
-  window.matchMedia('(min-width: 1101px)').addEventListener('change', (event) => {
+  window.matchMedia('(min-width: 1161px)').addEventListener('change', (event) => {
     if (event.matches) setOpen(false);
   });
 }
 
 
-/* ---------- 3. Сетка узлов на фоне ---------- */
+/* ---------- 3. Эффекты ---------- */
+
+// Тень шапки после прокрутки и полоса прогресса чтения
+function initHeaderEffects() {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+
+  let waiting = false;
+
+  function update() {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
+    header.style.setProperty('--progress', progress.toFixed(4));
+    header.classList.toggle('is-scrolled', window.scrollY > 8);
+    waiting = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (waiting) return;
+    waiting = true;
+    requestAnimationFrame(update);
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+}
+
+// Блоки с атрибутом data-reveal плавно появляются, когда попадают в окно
+function initReveal() {
+  const items = document.querySelectorAll('[data-reveal]');
+  if (!items.length) return;
+
+  function show(item) {
+    item.classList.add('is-visible');
+    // Когда анимация закончилась, возвращаем элементу его обычные стили (например, hover у карточек)
+    setTimeout(() => {
+      item.removeAttribute('data-reveal');
+      item.classList.remove('is-visible');
+      item.style.transitionDelay = '';
+    }, 1200);
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(show);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      observer.unobserve(entry.target);
+      show(entry.target);
+    });
+  }, { threshold: 0.12 });
+
+  items.forEach((item) => {
+    // Небольшая задержка по порядку внутри ряда, чтобы карточки появлялись волной
+    const index = Array.from(item.parentElement.children).indexOf(item);
+    item.style.transitionDelay = `${Math.min(index, 5) * 70}ms`;
+    observer.observe(item);
+  });
+}
+
+// Световое пятно под курсором на карточках (только там, где есть мышь)
+function initCardSpotlight() {
+  if (!window.matchMedia('(hover: hover)').matches) return;
+
+  document.querySelectorAll('.card, .info-card').forEach((card) => {
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+      card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+    });
+  });
+}
+
+
+/* ---------- 4. Сетка узлов на фоне ---------- */
 
 function initNetworkBackground() {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -113,7 +193,8 @@ function initNetworkBackground() {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  let scale = 1; // растёт вместе с размером шрифта на больших мониторах
+  let scale = 1;
+  const pointer = { x: -9999, y: -9999 }; // положение мыши (за пределами окна, пока её нет)
   let width = 0;
   let height = 0;
   let nodes = [];
@@ -161,6 +242,17 @@ function initNetworkBackground() {
       node.y += node.vy * delta;
       if (node.x < 0 || node.x > width) node.vx *= -1;
       if (node.y < 0 || node.y > height) node.vy *= -1;
+
+      // Узлы рядом с курсором слегка расступаются
+      const dx = node.x - pointer.x;
+      const dy = node.y - pointer.y;
+      const distance = Math.hypot(dx, dy);
+      const reach = 110 * scale;
+      if (distance < reach && distance > 0) {
+        const push = (1 - distance / reach) * 1.2 * delta;
+        node.x += (dx / distance) * push;
+        node.y += (dy / distance) * push;
+      }
     }
   }
 
@@ -181,6 +273,18 @@ function initNetworkBackground() {
         ctx.lineTo(nodes[j].x, nodes[j].y);
         ctx.stroke();
       }
+    }
+
+    // Линии от курсора к ближайшим узлам
+    const reachLine = 180 * scale;
+    for (const node of nodes) {
+      const distance = Math.hypot(node.x - pointer.x, node.y - pointer.y);
+      if (distance > reachLine) continue;
+      ctx.strokeStyle = `rgba(${color}, ${(1 - distance / reachLine) * 0.45})`;
+      ctx.beginPath();
+      ctx.moveTo(pointer.x, pointer.y);
+      ctx.lineTo(node.x, node.y);
+      ctx.stroke();
     }
 
     ctx.fillStyle = `rgba(${color}, 0.5)`;
@@ -216,6 +320,15 @@ function initNetworkBackground() {
   updateLoop();
 
   window.addEventListener('resize', resize);
+  // Только для мыши: на телефоне палец не должен «разгонять» узлы
+  window.addEventListener('pointermove', (event) => {
+    if (event.pointerType !== 'mouse') return;
+    pointer.x = event.clientX;
+    pointer.y = event.clientY;
+  });
+  document.documentElement.addEventListener('pointerleave', () => {
+    pointer.x = pointer.y = -9999;
+  });
   document.addEventListener('visibilitychange', updateLoop);
   reduceMotion.addEventListener('change', updateLoop);
   window.addEventListener('themechange', () => {
